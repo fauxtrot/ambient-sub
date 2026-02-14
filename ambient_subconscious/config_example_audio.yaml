@@ -1,0 +1,70 @@
+# Example configuration for multi-source audio capture
+#
+# This shows how to configure multiple microphone sources with labels.
+# Each source creates a separate audio agent that tags entries with the device label.
+
+spacetimedb:
+  host: "http://localhost:3000"
+  module: "ambient-listener"
+  auth_token: null
+  svelte_api_url: "http://localhost:5174"
+
+data_dir: "data"
+
+# Enable audio capture with multiple sources
+# Uses utterance-based capture with VAD (Voice Activity Detection)
+agents:
+  audio:
+    enabled: true
+    session_id: 1
+    sample_rate: 16000
+    whisper_model: "base"  # tiny, base, small, medium, large
+
+    # VAD (Voice Activity Detection) settings
+    # Energy-based utterance detection with RMS/EMA smoothing
+    vad_energy_threshold: 0.01  # RMS energy threshold (0.0-1.0)
+    vad_ema_alpha: 0.3  # EMA smoothing factor (0-1, higher = more reactive)
+    vad_min_utterance_duration: 0.5  # Minimum utterance length (seconds)
+    vad_max_utterance_duration: 30.0  # Maximum utterance length (seconds)
+    vad_silence_duration: 0.8  # Silence duration to end utterance (seconds)
+
+    # Whisper filtering settings
+    min_confidence: -0.5  # Minimum Whisper confidence (avg_logprob)
+    reject_fillers: true  # Reject filler words ("yeah", "uh-huh", etc.)
+
+    # Define multiple audio sources with labels
+    # Each source runs as a separate agent and tags entries with its label
+    sources:
+      # Desk microphone (default device)
+      - device_id: null  # null = system default
+        label: "desk_mic"
+
+      # USB headset
+      - device_id: 1  # Use device index from list_audio_devices.py
+        label: "headset"
+
+      # Conference room microphone
+      - device_id: 2
+        label: "conference_mic"
+
+# Example: Single audio source (simpler config)
+# agents:
+#   audio:
+#     enabled: true
+#     sources:
+#       - device_id: null
+#         label: "default"
+
+# Executive agent config (optional)
+executive:
+  enabled: true
+  llm:
+    host: "http://localhost:11434"
+    model: "deepseek-r1:8b"
+  conversational:
+    temperature: 0.7
+    max_tokens: 512
+  reasoning:
+    enabled: true
+    temperature: 0.7
+    max_tokens: 1024

@@ -1,0 +1,71 @@
+{
+	"/": [],
+	"/api/assistant-response": [
+		"src/routes/api/assistant-response/+server.ts"
+	],
+	"/api/avatar": [
+		"src/routes/api/avatar/+server.ts"
+	],
+	"/api/avatar/video/[name]": [
+		"src/routes/api/avatar/video/[name]/+server.ts"
+	],
+	"/api/diarization": [
+		"src/routes/api/diarization/+server.ts"
+	],
+	"/api/entry/enrich": [
+		"src/routes/api/entry/enrich/+server.ts"
+	],
+	"/api/entry/query": [
+		"src/routes/api/entry/query/+server.ts"
+	],
+	"/api/entry/update": [
+		"src/routes/api/entry/update/+server.ts"
+	],
+	"/api/frame/create": [
+		"src/routes/api/frame/create/+server.ts"
+	],
+	"/api/frame/query": [
+		"src/routes/api/frame/query/+server.ts"
+	],
+	"/api/frame/update": [
+		"src/routes/api/frame/update/+server.ts"
+	],
+	"/api/model-state": [
+		"src/routes/api/model-state/+server.ts"
+	],
+	"/api/process-bridge": [
+		"src/routes/api/process-bridge/+server.ts"
+	],
+	"/api/sessions": [
+		"src/routes/api/sessions/+server.ts"
+	],
+	"/api/sessions/[id]": [
+		"src/routes/api/sessions/[id]/+server.ts"
+	],
+	"/api/sessions/[id]/audio": [
+		"src/routes/api/sessions/[id]/audio/+server.ts"
+	],
+	"/api/speakers": [
+		"src/routes/api/speakers/+server.ts"
+	],
+	"/api/swarm/clear-logs": [
+		"src/routes/api/swarm/clear-logs/+server.ts"
+	],
+	"/api/swarm/logs": [
+		"src/routes/api/swarm/logs/+server.ts"
+	],
+	"/api/transcript-stream": [
+		"src/routes/api/transcript-stream/+server.ts"
+	],
+	"/avatar": [
+		"src/routes/avatar/+page.ts"
+	],
+	"/frames": [],
+	"/model-state": [
+		"src/routes/model-state/+page.ts"
+	],
+	"/session-editor": [
+		"src/routes/session-editor/+page.ts"
+	],
+	"/swarm-monitor": []
+}

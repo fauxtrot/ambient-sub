@@ -1,0 +1,87 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# .NET
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.user
+*.suo
+.vs/
+*.csproj.user
+packages/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build outputs
+web/ambient-listener-ui/dist/
+
+# Logs
+logs/
+*.log
+
+# Audio files
+audio/
+recordings/
+*.wav
+*.flac
+*.mp3
+*.ogg
+
+# Data directories
+data/
+
+# Whisper models
+*.bin
+.cache/whisper/
+.models/
+
+# SpacetimeDB
+.spacetime/
+*.wasm
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local data
+entries/
+speakers/
+context/
+ambient_listener/ambient/
+ambient_listener/settings.json
+
+# Claude Code
+.claude/
+.documents/
+
+# Windows artifacts
+nul
+python_experiment/.env

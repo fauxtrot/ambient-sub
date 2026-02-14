@@ -1,0 +1,112 @@
+[
+  {
+    "file": "silence_0000.wav",
+    "source": "synthetic_silence",
+    "expected": false,
+    "predicted": true,
+    "probability": 0.6768030524253845,
+    "confidence": 0.17680305242538452,
+    "correct": false,
+    "duration": 1.8604375,
+    "tokens": 8
+  },
+  {
+    "file": "silence_0001.wav",
+    "source": "synthetic_silence",
+    "expected": false,
+    "predicted": true,
+    "probability": 0.9096015095710754,
+    "confidence": 0.40960150957107544,
+    "correct": false,
+    "duration": 2.3540625,
+    "tokens": 8
+  },
+  {
+    "file": "silence_0002.wav",
+    "source": "synthetic_silence",
+    "expected": false,
+    "predicted": false,
+    "probability": 0.18632885813713074,
+    "confidence": 0.31367114186286926,
+    "correct": true,
+    "duration": 1.2270625,
+    "tokens": 8
+  },
+  {
+    "file": "silence_0003.wav",
+    "source": "synthetic_silence",
+    "expected": false,
+    "predicted": false,
+    "probability": 0.3236687183380127,
+    "confidence": 0.1763312816619873,
+    "correct": true,
+    "duration": 4.81175,
+    "tokens": 8
+  },
+  {
+    "file": "silence_0004.wav",
+    "source": "synthetic_silence",
+    "expected": false,
+    "predicted": true,
+    "probability": 0.5694000124931335,
+    "confidence": 0.06940001249313354,
+    "correct": false,
+    "duration": 1.928,
+    "tokens": 8
+  },
+  {
+    "file": "temp_test_segment.wav",
+    "source": "enrichment",
+    "expected": true,
+    "predicted": false,
+    "probability": 0.39700809121131897,
+    "confidence": 0.10299190878868103,
+    "correct": false,
+    "duration": 1.02,
+    "tokens": 8
+  },
+  {
+    "file": "temp_test_segment.wav",
+    "source": "enrichment",
+    "expected": true,
+    "predicted": true,
+    "probability": 0.7656123042106628,
+    "confidence": 0.26561230421066284,
+    "correct": true,
+    "duration": 1.02,
+    "tokens": 8
+  },
+  {
+    "file": "temp_test_segment.wav",
+    "source": "enrichment",
+    "expected": true,
+    "predicted": false,
+    "probability": 0.2623983919620514,
+    "confidence": 0.2376016080379486,
+    "correct": false,
+    "duration": 1.02,
+    "tokens": 8
+  },
+  {
+    "file": "temp_test_segment.wav",
+    "source": "enrichment",
+    "expected": true,
+    "predicted": false,
+    "probability": 0.040355999022722244,
+    "confidence": 0.45964400097727776,
+    "correct": false,
+    "duration": 1.02,
+    "tokens": 8
+  },
+  {
+    "file": "temp_test_segment.wav",
+    "source": "enrichment",
+    "expected": true,
+    "predicted": false,
+    "probability": 0.2858079969882965,
+    "confidence": 0.2141920030117035,
+    "correct": false,
+    "duration": 1.02,
+    "tokens": 8
+  }
+]

@@ -1,0 +1,211 @@
+# Ambient Subconscious Agent Swarm Configuration
+
+# SpacetimeDB Connection
+spacetimedb:
+  host: "http://127.0.0.1:3000"
+  module: "ambient-listener"
+  auth_token: null  # Optional authentication token
+  svelte_api_url: "http://localhost:5174"  # Svelte API for reducer calls (use localhost for IPv6 compatibility)
+
+# Agent Configuration
+agents:
+  # Audio Agent - captures audio and runs Whisper + Diart
+  audio:
+    enabled: true
+    device: "default"
+    providers:
+      - whisper
+      - diart
+    config:
+      sample_rate: 16000
+      vad_threshold: 0.5
+      min_speech_duration_ms: 300
+      whisper_model: "base"
+      diart_device: "cuda"  # or "cpu"
+
+  # Webcam Agent - captures webcam frames and runs YOLO
+  webcam:
+    enabled: true  # Temporarily disabled due to diart dependency
+    camera_index: 0
+    fps: 2.0  # Frames per second
+    resolution: [1280, 720]
+    yolo_model: "yolo26n"  # YOLO26n for best performance
+    yolo_confidence: 0.5
+    warmup_frames: 5
+
+  # Screen Capture Agent - captures screen and runs YOLO
+  screen_capture:
+    enabled: false  # Temporarily disabled due to diart dependency
+    fps: 1.0  # Frames per second (lower for background capture)
+    yolo_model: "yolo26n"  # YOLO26n for best performance
+    yolo_confidence: 0.5
+    capture_active_window_only: false
+    privacy_mode_apps: []  # List of apps to skip, e.g., ["banking.exe", "keepass.exe"]
+
+  # Sentiment Agent - adds sentiment to transcript entries
+  sentiment:
+    enabled: false  # Enable when ready
+    enrichment_type: "sentiment"
+    config:
+      model: "cardiffnlp/twitter-roberta-base-sentiment"
+      device: "cuda"
+
+  # Intent Agent - detects user intent
+  intent:
+    enabled: false  # Enable when ready
+    enrichment_type: "intent"
+    config:
+      model: "custom"  # Custom intent detection
+
+  # Context Agent - builds context from recent data
+  context:
+    enabled: false  # Enable when ready
+    enrichment_type: "context"
+    config:
+      window_size_seconds: 60
+      update_interval_seconds: 5
+
+# Subconscious Layer Configuration
+subconscious:
+  # CLCT Heartbeat
+  clct_heartbeat:
+    enabled: false  # Enable when ready
+    interval_seconds: 3  # How often to update
+    window_size_seconds: 60  # Working memory window
+    config:
+      latent_dim: 256
+      device: "cuda"
+      models:
+        - type: "snn"
+          name: "speaker_id"
+          path: "models/best_model_speaker.pt"
+        - type: "snn"
+          name: "sound_detection"
+          path: "models/best_model_binary.pt"
+
+  # Working Memory
+  working_memory:
+    max_size: 1000  # Maximum number of tokens to keep
+    decay_factor: 0.95  # Exponential decay for recency weighting
+
+# Executive Layer Configuration
+executive:
+  enabled: true  # Executive agent with dual-prompt architecture
+  update_interval_seconds: 5  # Poll providers every 5 seconds
+  context_window_seconds: 30  # Recent data window
+
+  # Single Model with Dual Prompts
+  llm:
+    provider: "ollama"
+    model: "deepseek-r1:8b"
+    host: "http://localhost:11434"
+
+  conversational:
+    temperature: 0.7
+    max_tokens: 512
+    system_prompt: "You are an observant AI assistant monitoring the user's environment. Respond naturally and concisely in 1-2 sentences. Focus on what you observe and notice."
+
+  reasoning:
+    temperature: 0.7
+    max_tokens: 1024
+    enabled: true
+    system_prompt: "You are a strategic reasoning agent. Provide deep analysis, identify patterns, and recommend actions. Think step-by-step about complex situations."
+    triggers:
+      - "think"
+      - "analyze"
+      - "reason"
+      - "decide"
+      - "complex"
+
+  # Stage server for VTuber avatar (emotes + speech)
+  stage:
+    enabled: true
+    host: "127.0.0.1"
+    port: 7860
+
+  # TTS engine (Kyutai Pocket TTS)
+  tts:
+    provider: "pocket"
+    voice: "fantine"
+    speaker_wav: "Selestia_fischl.ogg"  # Voice cloning source
+    sample_rate: 24000
+
+  # Interaction Awareness
+  interaction_awareness:
+    enabled: true
+    track_ui_edits: true
+    meta_awareness: true  # "why are you editing my brain"
+
+  # Behavior Generation
+  behavior:
+    update_interval_seconds: 1
+    emotion_sensitivity: 0.7
+    gaze_tracking: true
+
+# Training Configuration
+training:
+  # Correction Collector
+  correction_collector:
+    enabled: false  # Enable when ready
+    batch_size: 100  # Trigger retraining after N corrections
+    storage_path: "data/corrections"
+
+  # Model Retraining
+  retraining:
+    enabled: false
+    auto_retrain: false  # Set to true for automatic retraining
+    retraining_threshold: 100  # Number of corrections before retraining
+
+  # A/B Testing
+  ab_testing:
+    enabled: false
+    test_duration_samples: 1000  # Number of samples per model
+    confidence_threshold: 0.95  # Statistical confidence for promotion
+
+# Provider System Configuration
+providers:
+  # Capability Registry
+  registry:
+    allow_ab_testing: true
+    default_timeout_seconds: 30
+
+  # Capability Router
+  router:
+    max_workers: 4
+    default_timeout_seconds: 10
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/ambient_subconscious.log"
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+
+# Storage Configuration
+storage:
+  # Where to store captured data
+  base_path: "data"
+  audio_path: "data/audio"
+  frames_path: "data/frames"
+  sessions_path: "data/sessions"
+  models_path: "models"
+
+# Performance Configuration
+performance:
+  # Thread pool settings
+  max_workers: 8
+
+  # Memory limits
+  max_memory_mb: 4096
+
+  # GPU settings
+  gpu_memory_fraction: 0.5  # Fraction of GPU memory to use
+  allow_growth: true  # Allow GPU memory to grow
+
+# Feature Flags
+features:
+  enable_discord_integration: false  # Future feature
+  enable_voice_commands: false  # Future feature
+  enable_daily_summaries: false  # Future feature
+  enable_semantic_search: false  # Future feature
