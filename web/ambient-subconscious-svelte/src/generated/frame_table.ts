@@ -11,13 +11,13 @@ import {
 } from "spacetimedb";
 
 export default __t.row({
-  id: __t.u32().primaryKey().name("Id"),
-  sessionId: __t.u32().name("SessionId"),
-  timestamp: __t.timestamp().name("Timestamp"),
-  frameType: __t.string().name("FrameType"),
-  imagePath: __t.string().name("ImagePath"),
-  detections: __t.string().name("Detections"),
-  reviewed: __t.bool().name("Reviewed"),
-  notes: __t.option(__t.string()).name("Notes"),
-  createdAt: __t.timestamp().name("CreatedAt"),
+  id: __t.u32().primaryKey(),
+  sessionId: __t.u32().name("session_id"),
+  timestamp: __t.timestamp(),
+  frameType: __t.string().name("frame_type"),
+  imagePath: __t.string().name("image_path"),
+  detections: __t.string(),
+  reviewed: __t.bool(),
+  notes: __t.option(__t.string()),
+  createdAt: __t.timestamp().name("created_at"),
 });

@@ -11,10 +11,10 @@ import {
 } from "spacetimedb";
 
 export default __t.row({
-  id: __t.u32().primaryKey().name("Id"),
-  deviceId: __t.u32().name("DeviceId"),
-  inputIndex: __t.i32().name("InputIndex"),
-  name: __t.string().name("Name"),
-  isDefault: __t.bool().name("IsDefault"),
-  updatedAt: __t.timestamp().name("UpdatedAt"),
+  id: __t.u32().primaryKey(),
+  deviceId: __t.u32().name("device_id"),
+  inputIndex: __t.i32().name("input_index"),
+  name: __t.string(),
+  isDefault: __t.bool().name("is_default"),
+  updatedAt: __t.timestamp().name("updated_at"),
 });

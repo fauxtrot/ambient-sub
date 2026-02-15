@@ -11,13 +11,13 @@ import {
 } from "spacetimedb";
 
 export default __t.row({
-  id: __t.u32().primaryKey().name("Id"),
-  entryId: __t.u32().name("EntryId"),
-  startMs: __t.u32().name("StartMs"),
-  endMs: __t.u32().name("EndMs"),
-  pyannoteLabel: __t.string().name("PyannoteLabel"),
-  matchedSpeaker: __t.option(__t.string()).name("MatchedSpeaker"),
-  confidence: __t.option(__t.f32()).name("Confidence"),
-  transcriptSlice: __t.option(__t.string()).name("TranscriptSlice"),
-  embedding: __t.option(__t.byteArray()).name("Embedding"),
+  id: __t.u32().primaryKey(),
+  entryId: __t.u32().name("entry_id"),
+  startMs: __t.u32().name("start_ms"),
+  endMs: __t.u32().name("end_ms"),
+  pyannoteLabel: __t.string().name("pyannote_label"),
+  matchedSpeaker: __t.option(__t.string()).name("matched_speaker"),
+  confidence: __t.option(__t.f32()),
+  transcriptSlice: __t.option(__t.string()).name("transcript_slice"),
+  embedding: __t.option(__t.byteArray()),
 });

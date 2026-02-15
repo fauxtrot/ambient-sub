@@ -1,0 +1,10 @@
+/home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/deps/spacetimedb_query_builder-064ebe6f7c423f5c.d: /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/lib.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/expr.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/join.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/table.rs
+
+/home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/deps/libspacetimedb_query_builder-064ebe6f7c423f5c.rlib: /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/lib.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/expr.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/join.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/table.rs
+
+/home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/deps/libspacetimedb_query_builder-064ebe6f7c423f5c.rmeta: /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/lib.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/expr.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/join.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/table.rs
+
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/lib.rs:
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/expr.rs:
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/join.rs:
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/spacetimedb-query-builder-1.12.0/src/table.rs:

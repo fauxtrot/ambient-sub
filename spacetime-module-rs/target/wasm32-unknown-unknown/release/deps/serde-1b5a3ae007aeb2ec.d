@@ -1,0 +1,14 @@
+/home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/deps/serde-1b5a3ae007aeb2ec.d: /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/build/serde-b4eb2e00a8b837e2/out/private.rs
+
+/home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/deps/libserde-1b5a3ae007aeb2ec.rlib: /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/build/serde-b4eb2e00a8b837e2/out/private.rs
+
+/home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/deps/libserde-1b5a3ae007aeb2ec.rmeta: /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/build/serde-b4eb2e00a8b837e2/out/private.rs
+
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/build/serde-b4eb2e00a8b837e2/out/private.rs:
+
+# env-dep:OUT_DIR=/home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/build/serde-b4eb2e00a8b837e2/out

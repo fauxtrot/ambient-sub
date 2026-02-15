@@ -49,6 +49,10 @@ class QueueAudioSource(AudioSource):
                     self._stopped = True
                     break
 
+                # Unwrap AudioChunk from ZMQ receiver if needed
+                if hasattr(chunk, 'samples'):
+                    chunk = chunk.samples  # AudioChunk.samples is float32 ndarray
+
                 # Ensure chunk is the right shape
                 if isinstance(chunk, np.ndarray):
                     chunks_received += 1

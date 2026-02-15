@@ -11,11 +11,11 @@ import {
 } from "spacetimedb";
 
 export default __t.row({
-  id: __t.u32().primaryKey().name("Id"),
-  deviceIdentity: __t.string().name("DeviceIdentity"),
-  name: __t.string().name("Name"),
-  platform: __t.string().name("Platform"),
-  status: __t.string().name("Status"),
-  lastHeartbeat: __t.timestamp().name("LastHeartbeat"),
-  createdAt: __t.timestamp().name("CreatedAt"),
+  id: __t.u32().primaryKey(),
+  deviceIdentity: __t.string().name("device_identity"),
+  name: __t.string(),
+  platform: __t.string(),
+  status: __t.string(),
+  lastHeartbeat: __t.timestamp().name("last_heartbeat"),
+  createdAt: __t.timestamp().name("created_at"),
 });

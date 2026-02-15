@@ -16,7 +16,7 @@ from typing import Dict, List, Optional, Any
 import aiohttp
 import numpy as np
 
-from ..llm import PersonaplexClient, OllamaClient
+from ..llm import PersonaplexClient, OllamaClient, OpenAIClient
 from .stage_client import StageClient
 from .tts import TTSEngine
 
@@ -65,12 +65,21 @@ class ExecutiveAgent:
         self.update_interval = update_interval
         self.context_window_seconds = context_window_seconds
 
-        # Initialize single LLM client
-        self.llm = OllamaClient(
-            host=llm_config.get('host', 'http://localhost:11434'),
-            model=llm_config.get('model', 'deepseek-r1:8b'),
-            temperature=conversational_config.get('temperature', 0.7)
-        )
+        # Initialize LLM client based on provider
+        provider = llm_config.get('provider', 'ollama')
+        if provider == 'openai':
+            self.llm = OpenAIClient(
+                host=llm_config.get('host', 'http://localhost:8080'),
+                model=llm_config.get('model', 'qwen2.5-7b'),
+                temperature=conversational_config.get('temperature', 0.7),
+                max_tokens=conversational_config.get('max_tokens', 512),
+            )
+        else:
+            self.llm = OllamaClient(
+                host=llm_config.get('host', 'http://localhost:11434'),
+                model=llm_config.get('model', 'deepseek-r1:8b'),
+                temperature=conversational_config.get('temperature', 0.7)
+            )
 
         # Store prompts for different modes
         self.conversational_prompt = conversational_config.get('system_prompt',
@@ -125,6 +134,11 @@ class ExecutiveAgent:
             "agent_state": "initializing",
             "notes": []
         }
+
+        # Track whether providers delivered anything new since last think
+        self._last_visual = ""
+        self._last_audio = ""
+        self._has_new_input = False
 
         self.running = False
 
@@ -195,19 +209,27 @@ class ExecutiveAgent:
                 # 2. Update side context from providers
                 self._update_context_from_providers(frames, entries)
 
-                # 3. Generate observation/thought
+                # 3. Skip LLM if nothing new to observe
+                if not self._has_new_input:
+                    logger.debug("No new input — skipping think cycle")
+                    elapsed = time.time() - loop_start
+                    sleep_time = max(0, self.update_interval - elapsed)
+                    await asyncio.sleep(sleep_time)
+                    continue
+
+                # 4. Generate observation/thought
                 response = await self._think()
 
-                # 4. Apply context edits
+                # 5. Apply context edits
                 if response.get("context_edit"):
                     self._apply_context_edit(response["context_edit"])
 
-                # 5. Output thought to console
+                # 6. Output thought to console
                 message = response.get("message", "")
                 if message:
                     print(f"[Executive:Conversational] {message}")
 
-                # 6. Execute stage actions (emote/speak) as background task
+                # 7. Execute stage actions (emote/speak) as background task
                 actions = response.get("actions", [])
                 if actions:
                     # Cancel previous action if still running
@@ -217,7 +239,7 @@ class ExecutiveAgent:
                         self._execute_actions(actions)
                     )
 
-                # 7. Add to dialogue history
+                # 8. Add to dialogue history
                 self.dialogue_history.append({
                     "role": "assistant",
                     "content": message,
@@ -314,7 +336,12 @@ class ExecutiveAgent:
             return [], []
 
     def _update_context_from_providers(self, frames: List[Dict], entries: List[Dict]):
-        """Update side context from provider input tokens."""
+        """Update side context from provider input tokens.
+
+        Sets self._has_new_input = True only when something actually changed.
+        """
+        self._has_new_input = False
+
         # Aggregate visual detections from recent frames
         if frames:
             objects = []
@@ -331,9 +358,14 @@ class ExecutiveAgent:
             top_objects = [obj for obj, _ in object_counts.most_common(5)]
 
             if top_objects:
-                self.context["recent_visual"] = f"Detected: {', '.join(top_objects)}"
+                visual = f"Detected: {', '.join(top_objects)}"
             else:
-                self.context["recent_visual"] = "No objects detected"
+                visual = "No objects detected"
+
+            if visual != self._last_visual:
+                self._has_new_input = True
+                self._last_visual = visual
+            self.context["recent_visual"] = visual
 
         # Aggregate recent audio transcripts
         if entries:
@@ -341,7 +373,11 @@ class ExecutiveAgent:
             transcript = latest_entry.get("transcript", "")
             speaker = latest_entry.get("speaker", "Unknown")
 
-            self.context["recent_audio"] = f"{speaker}: {transcript}" if transcript else "No recent audio"
+            audio = f"{speaker}: {transcript}" if transcript else "No recent audio"
+            if audio != self._last_audio:
+                self._has_new_input = True
+                self._last_audio = audio
+            self.context["recent_audio"] = audio
 
     async def _think(self) -> Dict[str, Any]:
         """

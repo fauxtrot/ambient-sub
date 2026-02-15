@@ -158,119 +158,119 @@ const tablesSchema = __schema(
   __table({
     name: 'assistant_response',
     indexes: [
-      { name: 'Id', algorithm: 'btree', columns: [
+      { name: 'id', algorithm: 'btree', columns: [
         'id',
       ] },
     ],
     constraints: [
-      { name: 'assistant_response_Id_key', constraint: 'unique', columns: ['id'] },
+      { name: 'assistant_response_id_key', constraint: 'unique', columns: ['id'] },
     ],
   }, AssistantResponseRow),
   __table({
     name: 'audio_input',
     indexes: [
-      { name: 'Id', algorithm: 'btree', columns: [
+      { name: 'id', algorithm: 'btree', columns: [
         'id',
       ] },
     ],
     constraints: [
-      { name: 'audio_input_Id_key', constraint: 'unique', columns: ['id'] },
+      { name: 'audio_input_id_key', constraint: 'unique', columns: ['id'] },
     ],
   }, AudioInputRow),
   __table({
     name: 'audio_session',
     indexes: [
-      { name: 'Id', algorithm: 'btree', columns: [
+      { name: 'id', algorithm: 'btree', columns: [
         'id',
       ] },
     ],
     constraints: [
-      { name: 'audio_session_Id_key', constraint: 'unique', columns: ['id'] },
+      { name: 'audio_session_id_key', constraint: 'unique', columns: ['id'] },
     ],
   }, AudioSessionRow),
   __table({
     name: 'capture_config',
     indexes: [
-      { name: 'DeviceId', algorithm: 'btree', columns: [
+      { name: 'device_id', algorithm: 'btree', columns: [
         'deviceId',
       ] },
     ],
     constraints: [
-      { name: 'capture_config_DeviceId_key', constraint: 'unique', columns: ['deviceId'] },
+      { name: 'capture_config_device_id_key', constraint: 'unique', columns: ['deviceId'] },
     ],
   }, CaptureConfigRow),
   __table({
     name: 'capture_device',
     indexes: [
-      { name: 'DeviceIdentity', algorithm: 'btree', columns: [
+      { name: 'device_identity', algorithm: 'btree', columns: [
         'deviceIdentity',
       ] },
-      { name: 'Id', algorithm: 'btree', columns: [
+      { name: 'id', algorithm: 'btree', columns: [
         'id',
       ] },
     ],
     constraints: [
-      { name: 'capture_device_DeviceIdentity_key', constraint: 'unique', columns: ['deviceIdentity'] },
-      { name: 'capture_device_Id_key', constraint: 'unique', columns: ['id'] },
+      { name: 'capture_device_device_identity_key', constraint: 'unique', columns: ['deviceIdentity'] },
+      { name: 'capture_device_id_key', constraint: 'unique', columns: ['id'] },
     ],
   }, CaptureDeviceRow),
   __table({
     name: 'diarization_segment',
     indexes: [
-      { name: 'Id', algorithm: 'btree', columns: [
+      { name: 'id', algorithm: 'btree', columns: [
         'id',
       ] },
     ],
     constraints: [
-      { name: 'diarization_segment_Id_key', constraint: 'unique', columns: ['id'] },
+      { name: 'diarization_segment_id_key', constraint: 'unique', columns: ['id'] },
     ],
   }, DiarizationSegmentRow),
   __table({
     name: 'executive_context',
     indexes: [
-      { name: 'Id', algorithm: 'btree', columns: [
+      { name: 'id', algorithm: 'btree', columns: [
         'id',
       ] },
     ],
     constraints: [
-      { name: 'executive_context_Id_key', constraint: 'unique', columns: ['id'] },
+      { name: 'executive_context_id_key', constraint: 'unique', columns: ['id'] },
     ],
   }, ExecutiveContextRow),
   __table({
     name: 'frame',
     indexes: [
-      { name: 'Id', algorithm: 'btree', columns: [
+      { name: 'id', algorithm: 'btree', columns: [
         'id',
       ] },
     ],
     constraints: [
-      { name: 'frame_Id_key', constraint: 'unique', columns: ['id'] },
+      { name: 'frame_id_key', constraint: 'unique', columns: ['id'] },
     ],
   }, FrameRow),
   __table({
     name: 'speaker',
     indexes: [
-      { name: 'Id', algorithm: 'btree', columns: [
+      { name: 'id', algorithm: 'btree', columns: [
         'id',
       ] },
-      { name: 'Name', algorithm: 'btree', columns: [
+      { name: 'name', algorithm: 'btree', columns: [
         'name',
       ] },
     ],
     constraints: [
-      { name: 'speaker_Id_key', constraint: 'unique', columns: ['id'] },
-      { name: 'speaker_Name_key', constraint: 'unique', columns: ['name'] },
+      { name: 'speaker_id_key', constraint: 'unique', columns: ['id'] },
+      { name: 'speaker_name_key', constraint: 'unique', columns: ['name'] },
     ],
   }, SpeakerRow),
   __table({
     name: 'transcript_entry',
     indexes: [
-      { name: 'Id', algorithm: 'btree', columns: [
+      { name: 'id', algorithm: 'btree', columns: [
         'id',
       ] },
     ],
     constraints: [
-      { name: 'transcript_entry_Id_key', constraint: 'unique', columns: ['id'] },
+      { name: 'transcript_entry_id_key', constraint: 'unique', columns: ['id'] },
     ],
   }, TranscriptEntryRow),
 );

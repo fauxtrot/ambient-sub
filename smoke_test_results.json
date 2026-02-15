@@ -1,0 +1,11 @@
+{
+  "device": "cuda:0",
+  "timestamp": "2026-02-14T18:11:11",
+  "results": {
+    "gpu": true,
+    "whisper": true,
+    "yolo": true,
+    "diart": true,
+    "diart_streaming": true
+  }
+}

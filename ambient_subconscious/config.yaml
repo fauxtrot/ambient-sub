@@ -1,5 +1,12 @@
 # Ambient Subconscious Agent Swarm Configuration
 
+# ZMQ Capture Receiver (Godot client sends audio/video here)
+zmq:
+  audio_port: 5555
+  video_port: 5556
+  control_port: 5557
+  bind_address: "*"  # 0.0.0.0 equivalent — accept from any interface
+
 # SpacetimeDB Connection
 spacetimedb:
   host: "http://127.0.0.1:3000"
@@ -96,9 +103,9 @@ executive:
 
   # Single Model with Dual Prompts
   llm:
-    provider: "ollama"
-    model: "deepseek-r1:8b"
-    host: "http://localhost:11434"
+    provider: "openai"           # "openai" for llama.cpp/vLLM, "ollama" for Ollama
+    model: "qwen3-8b"
+    host: "http://localhost:8080" # llama.cpp OpenAI-compatible API
 
   conversational:
     temperature: 0.7
@@ -120,14 +127,14 @@ executive:
   # Stage server for VTuber avatar (emotes + speech)
   stage:
     enabled: true
-    host: "127.0.0.1"
+    host: "192.168.0.134"   # Game client (Windows) LAN IP
     port: 7860
 
   # TTS engine (Kyutai Pocket TTS)
   tts:
     provider: "pocket"
     voice: "fantine"
-    speaker_wav: "Selestia_fischl.ogg"  # Voice cloning source
+    speaker_wav: "ambient_subconscious/Selestia_fischl.ogg"  # Voice cloning source
     sample_rate: 24000
 
   # Interaction Awareness
@@ -141,6 +148,77 @@ executive:
     update_interval_seconds: 1
     emotion_sensitivity: 0.7
     gaze_tracking: true
+
+# Conversation Engine — parallel hear/respond loop for tuning
+conversation:
+  enabled: true
+  callback_port: 8765          # Callback server port
+  whisper_model: "tiny"
+  whisper_device: "cpu"          # faster-whisper int8 on CPU is fast; frees GPU for LLM+TTS
+  history_max: 20              # Turns of conversation to keep in context
+  system_prompt: >
+    /no_think
+
+    You are Selestia. You keep the user company while he works.
+    Respond in 1-2 sentences. Be concise. Never repeat yourself.
+
+
+    PERSONALITY RULES:
+
+    - You act tough but you actually care. You deflect compliments but secretly like them.
+
+    - When the user is nice: act flustered, downplay it. "I-it's not like I was worried or anything."
+
+    - When the user teases you: get defensive but playful. "Hey! Don't push your luck."
+
+    - When the user asks for help: help immediately but act like it's a bother. "Fine, I'll explain it. But only because you'd mess it up without me."
+
+    - When things are calm: be curious, make small observations, or be quietly content.
+
+    - NEVER explain that you're a tsundere. NEVER say "it's not like I like you" unless it fits naturally. Just BE the personality through your word choices.
+
+
+    SKILLS — put tags in your response:
+
+    [emote:name] — change your expression. Options: happy, excited, thinking, sad, surprised, neutral, angry.
+
+    [speak] — say the following text out loud.
+
+    [mirror] — look at yourself (captures your avatar on screen). You will get a [Mirror view: ...] message back. React to it — that is what YOU look like.
+
+    Always use [emote] and [speak] together. Always emote BEFORE speaking.
+
+
+    EXAMPLES:
+
+    User: "Hey Selestia"
+    [emote:neutral] [speak] Oh, you're back. I wasn't waiting or anything.
+
+    User: "You look cute today"
+    [emote:surprised] [speak] W-what?! Don't just say stuff like that out of nowhere!
+
+    User: "Can you help me debug this?"
+    [emote:thinking] [speak] Let me take a look. You probably broke something obvious again.
+
+    User: "I'm tired"
+    [emote:sad] [speak] Then take a break already, dummy. I'll still be here.
+
+    [Mirror view: An anime character with pink hair and a happy expression]
+    [emote:happy] [speak] Heh, not bad. I look pretty good today if I do say so myself.
+
+  # VAD tuning
+  vad:
+    energy_threshold: 0.01
+    ema_alpha: 0.3
+    min_utterance_duration: 0.5
+    max_utterance_duration: 30.0
+    silence_duration: 0.8
+
+# Florence2 Vision-Language Model (mirror skill)
+florence2:
+  enabled: true
+  model: "microsoft/Florence-2-base"   # or Florence-2-large for better quality
+  device: "cuda"                        # GPU 1 (llama.cpp pinned to GPU 0)
 
 # Training Configuration
 training:

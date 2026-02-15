@@ -42,17 +42,8 @@
 	"/api/sessions/[id]": [
 		"src/routes/api/sessions/[id]/+server.ts"
 	],
-	"/api/sessions/[id]/audio": [
-		"src/routes/api/sessions/[id]/audio/+server.ts"
-	],
-	"/api/speakers": [
-		"src/routes/api/speakers/+server.ts"
-	],
 	"/api/swarm/clear-logs": [
 		"src/routes/api/swarm/clear-logs/+server.ts"
-	],
-	"/api/swarm/logs": [
-		"src/routes/api/swarm/logs/+server.ts"
 	],
 	"/api/transcript-stream": [
 		"src/routes/api/transcript-stream/+server.ts"

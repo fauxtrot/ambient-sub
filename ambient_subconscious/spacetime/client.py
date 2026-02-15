@@ -67,6 +67,7 @@ class SpacetimeClient:
         self.svelte_api_url = svelte_api_url.rstrip('/')
 
         self._session: Optional[aiohttp.ClientSession] = None
+        self._session_loop: Optional[asyncio.AbstractEventLoop] = None
         self._subscriptions: Dict[str, SubscriptionConfig] = {}
         self._connected = False
 
@@ -87,6 +88,7 @@ class SpacetimeClient:
                 headers['Authorization'] = f"Bearer {self.auth_token}"
 
             self._session = aiohttp.ClientSession(headers=headers)
+            self._session_loop = asyncio.get_event_loop()
             self._connected = True
 
             logger.info(f"HTTP client initialized (Svelte API: {self.svelte_api_url})")
@@ -110,6 +112,23 @@ class SpacetimeClient:
 
         except Exception as e:
             logger.error(f"Error disconnecting from SpacetimeDB: {e}", exc_info=True)
+
+    async def _get_session(self) -> aiohttp.ClientSession:
+        """Get an aiohttp session valid for the current event loop.
+
+        Pipeline threads run their own event loops, so the session created
+        in the main loop can't be reused.  When the running loop differs
+        from the one that created ``self._session``, spin up a temporary
+        per-request session instead.
+        """
+        current_loop = asyncio.get_running_loop()
+        if self._session and self._session_loop is current_loop:
+            return self._session
+        # Different loop — caller is responsible for closing this session
+        headers = {}
+        if self.auth_token:
+            headers['Authorization'] = f"Bearer {self.auth_token}"
+        return aiohttp.ClientSession(headers=headers)
 
     async def call_reducer(
         self,
@@ -143,6 +162,8 @@ class SpacetimeClient:
         if reducer_name == "CreateFrame":
             return await self._call_svelte_api_frame_create(kwargs)
 
+        session = await self._get_session()
+        own_session = session is not self._session
         try:
             # Prepare reducer call payload
             # SpacetimeDB expects reducer args as a JSON array
@@ -154,7 +175,7 @@ class SpacetimeClient:
 
             logger.debug(f"Calling reducer {reducer_name} with payload: {payload}")
 
-            async with self._session.post(
+            async with session.post(
                 self.reducer_url,
                 json=payload,
                 timeout=aiohttp.ClientTimeout(total=30)
@@ -171,6 +192,9 @@ class SpacetimeClient:
         except Exception as e:
             logger.error(f"Error calling reducer {reducer_name}: {e}", exc_info=True)
             raise
+        finally:
+            if own_session:
+                await session.close()
 
     async def _call_svelte_api_frame_create(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -182,6 +206,8 @@ class SpacetimeClient:
         Returns:
             API response
         """
+        session = await self._get_session()
+        own_session = session is not self._session
         try:
             # Convert snake_case to camelCase for API
             payload = {
@@ -195,7 +221,7 @@ class SpacetimeClient:
 
             logger.debug(f"Calling Svelte API /api/frame/create with payload: {payload}")
 
-            async with self._session.post(
+            async with session.post(
                 f"{self.svelte_api_url}/api/frame/create",
                 json=payload,
                 timeout=aiohttp.ClientTimeout(total=30)
@@ -212,6 +238,9 @@ class SpacetimeClient:
         except Exception as e:
             logger.error(f"Error calling Svelte API /api/frame/create: {e}", exc_info=True)
             raise
+        finally:
+            if own_session:
+                await session.close()
 
     def _prepare_reducer_args(
         self,
@@ -317,12 +346,14 @@ class SpacetimeClient:
         if not self._connected or not self._session:
             raise RuntimeError("Not connected to SpacetimeDB. Call connect() first.")
 
+        session = await self._get_session()
+        own_session = session is not self._session
         try:
             payload = {"sql": sql}
 
             logger.debug(f"Executing query: {sql}")
 
-            async with self._session.post(
+            async with session.post(
                 self.query_url,
                 json=payload,
                 timeout=aiohttp.ClientTimeout(total=30)
@@ -342,6 +373,9 @@ class SpacetimeClient:
         except Exception as e:
             logger.error(f"Error executing query: {e}", exc_info=True)
             raise
+        finally:
+            if own_session:
+                await session.close()
 
     async def subscribe(
         self,

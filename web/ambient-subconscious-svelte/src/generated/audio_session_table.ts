@@ -11,13 +11,13 @@ import {
 } from "spacetimedb";
 
 export default __t.row({
-  id: __t.u32().primaryKey().name("Id"),
-  deviceId: __t.u32().name("DeviceId"),
-  date: __t.string().name("Date"),
-  mode: __t.string().name("Mode"),
-  status: __t.string().name("Status"),
-  audioPath: __t.string().name("AudioPath"),
-  startedAt: __t.timestamp().name("StartedAt"),
-  endedAt: __t.option(__t.timestamp()).name("EndedAt"),
-  durationMs: __t.u32().name("DurationMs"),
+  id: __t.u32().primaryKey(),
+  deviceId: __t.u32().name("device_id"),
+  date: __t.string(),
+  mode: __t.string(),
+  status: __t.string(),
+  audioPath: __t.string().name("audio_path"),
+  startedAt: __t.timestamp().name("started_at"),
+  endedAt: __t.option(__t.timestamp()).name("ended_at"),
+  durationMs: __t.u32().name("duration_ms"),
 });

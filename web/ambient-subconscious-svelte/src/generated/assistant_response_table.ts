@@ -11,11 +11,11 @@ import {
 } from "spacetimedb";
 
 export default __t.row({
-  id: __t.u32().primaryKey().name("Id"),
-  entryId: __t.u32().name("EntryId"),
-  quickReply: __t.option(__t.string()).name("QuickReply"),
-  fullReply: __t.option(__t.string()).name("FullReply"),
-  reaction: __t.option(__t.string()).name("Reaction"),
-  thinkingLog: __t.option(__t.string()).name("ThinkingLog"),
-  createdAt: __t.timestamp().name("CreatedAt"),
+  id: __t.u32().primaryKey(),
+  entryId: __t.u32().name("entry_id"),
+  quickReply: __t.option(__t.string()).name("quick_reply"),
+  fullReply: __t.option(__t.string()).name("full_reply"),
+  reaction: __t.option(__t.string()),
+  thinkingLog: __t.option(__t.string()).name("thinking_log"),
+  createdAt: __t.timestamp().name("created_at"),
 });

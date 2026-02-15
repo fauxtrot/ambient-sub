@@ -264,14 +264,15 @@ def setup_logging(config: Optional[Config] = None) -> None:
     log_file = Path(config.logging_file)
     log_file.parent.mkdir(parents=True, exist_ok=True)
 
-    # Configure logging
+    # Configure logging (force=True to override any handlers added by library imports)
     logging.basicConfig(
         level=getattr(logging, config.logging_level),
         format=config.get('logging.format', '%(asctime)s - %(name)s - %(levelname)s - %(message)s'),
         handlers=[
             logging.FileHandler(config.logging_file),
             logging.StreamHandler()
-        ]
+        ],
+        force=True,
     )
 
     logger.info("Logging configured")

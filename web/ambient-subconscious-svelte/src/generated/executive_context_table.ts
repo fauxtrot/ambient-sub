@@ -11,15 +11,15 @@ import {
 } from "spacetimedb";
 
 export default __t.row({
-  id: __t.u32().primaryKey().name("Id"),
-  lastUpdated: __t.timestamp().name("LastUpdated"),
-  recentVisual: __t.string().name("RecentVisual"),
-  recentAudio: __t.string().name("RecentAudio"),
-  baselineVisual: __t.string().name("BaselineVisual"),
-  baselineAudio: __t.string().name("BaselineAudio"),
-  userState: __t.string().name("UserState"),
-  agentState: __t.string().name("AgentState"),
-  nextCheckIn: __t.option(__t.i64()).name("NextCheckIn"),
-  notes: __t.string().name("Notes"),
-  createdAt: __t.timestamp().name("CreatedAt"),
+  id: __t.u32().primaryKey(),
+  lastUpdated: __t.timestamp().name("last_updated"),
+  recentVisual: __t.string().name("recent_visual"),
+  recentAudio: __t.string().name("recent_audio"),
+  baselineVisual: __t.string().name("baseline_visual"),
+  baselineAudio: __t.string().name("baseline_audio"),
+  userState: __t.string().name("user_state"),
+  agentState: __t.string().name("agent_state"),
+  nextCheckIn: __t.option(__t.i64()).name("next_check_in"),
+  notes: __t.string(),
+  createdAt: __t.timestamp().name("created_at"),
 });

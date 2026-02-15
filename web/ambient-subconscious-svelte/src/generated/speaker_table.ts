@@ -11,11 +11,11 @@ import {
 } from "spacetimedb";
 
 export default __t.row({
-  id: __t.u32().primaryKey().name("Id"),
-  name: __t.string().name("Name"),
-  similarityThreshold: __t.f32().name("SimilarityThreshold"),
-  embedding: __t.option(__t.byteArray()).name("Embedding"),
-  sampleCount: __t.u32().name("SampleCount"),
-  createdAt: __t.timestamp().name("CreatedAt"),
-  updatedAt: __t.timestamp().name("UpdatedAt"),
+  id: __t.u32().primaryKey(),
+  name: __t.string(),
+  similarityThreshold: __t.f32().name("similarity_threshold"),
+  embedding: __t.option(__t.byteArray()),
+  sampleCount: __t.u32().name("sample_count"),
+  createdAt: __t.timestamp().name("created_at"),
+  updatedAt: __t.timestamp().name("updated_at"),
 });

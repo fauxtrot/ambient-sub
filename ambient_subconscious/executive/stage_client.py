@@ -2,6 +2,7 @@
 import asyncio
 import base64
 import logging
+import uuid
 from typing import Optional
 
 import aiohttp
@@ -116,14 +117,29 @@ class StageClient:
         audio: np.ndarray,
         sample_rate: int = 24000,
         chunk_seconds: float = 0.5,
-    ):
+        speak_id: Optional[str] = None,
+        callback_url: Optional[str] = None,
+    ) -> str:
         """
         Stream audio to the stage server in chunks via POST /speak.
 
         Resamples to STAGE_MIX_RATE (44100) to match the Godot audio bus,
         then chunks and streams. First chunk includes sample_rate, last
         chunk includes done: true.
+
+        Args:
+            audio: float32 mono PCM numpy array
+            sample_rate: Source sample rate
+            chunk_seconds: Chunk duration for streaming
+            speak_id: Unique utterance ID (auto-generated if None)
+            callback_url: URL the stage server POSTs to when playback finishes
+
+        Returns:
+            The speak_id for this utterance.
         """
+        if speak_id is None:
+            speak_id = f"utt_{uuid.uuid4().hex[:8]}"
+
         # Resample to match Godot's audio bus rate
         if sample_rate != self.STAGE_MIX_RATE:
             audio = self._resample(audio, sample_rate, self.STAGE_MIX_RATE)
@@ -146,9 +162,12 @@ class StageClient:
 
             payload = {"audio": audio_b64}
 
-            # First chunk: include sample rate
+            # First chunk: include sample rate, id, and callback_url
             if i == 0:
                 payload["sample_rate"] = sample_rate
+                payload["id"] = speak_id
+                if callback_url:
+                    payload["callback_url"] = callback_url
 
             # Last chunk: signal done
             if i == num_chunks - 1:
@@ -161,16 +180,29 @@ class StageClient:
                     if resp.status != 200:
                         text = await resp.text()
                         logger.warning(f"Speak chunk {i+1}/{num_chunks} failed ({resp.status}): {text}")
-                        return
+                        return speak_id
             except Exception as e:
                 logger.warning(f"Speak chunk {i+1}/{num_chunks} error: {e}")
-                return
+                return speak_id
 
             # Small delay between chunks to avoid overwhelming the server
             if i < num_chunks - 1:
                 await asyncio.sleep(0.05)
 
-        logger.debug(f"Sent {num_chunks} audio chunks ({total_samples} samples)")
+        logger.debug(f"Sent {num_chunks} audio chunks ({total_samples} samples, id={speak_id})")
+        return speak_id
+
+    async def speak_status(self) -> dict:
+        """GET /speak/status — current speech playback state."""
+        try:
+            session = await self._get_session()
+            async with session.get(f"{self.base_url}/speak/status") as resp:
+                if resp.status == 200:
+                    return await resp.json()
+                return {}
+        except Exception as e:
+            logger.warning(f"Failed to get speak status: {e}")
+            return {}
 
     async def stop_speaking(self):
         """POST /speak/stop - interrupt current speech."""
@@ -181,3 +213,19 @@ class StageClient:
                     logger.debug("Speech stopped")
         except Exception as e:
             logger.warning(f"Failed to stop speaking: {e}")
+
+    async def mirror(self) -> Optional[bytes]:
+        """GET /mirror — capture viewport screenshot as JPEG bytes."""
+        try:
+            session = await self._get_session()
+            async with session.get(f"{self.base_url}/mirror") as resp:
+                if resp.status == 200:
+                    data = await resp.read()
+                    logger.debug(f"Mirror captured: {len(data)} bytes")
+                    return data
+                else:
+                    logger.warning(f"Mirror failed ({resp.status})")
+                return None
+        except Exception as e:
+            logger.warning(f"Failed to get mirror: {e}")
+            return None

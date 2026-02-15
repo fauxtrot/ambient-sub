@@ -1,0 +1,11 @@
+/home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/deps/approx-b261027d4fd7724c.d: /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/lib.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/abs_diff_eq.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/relative_eq.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/ulps_eq.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/macros.rs
+
+/home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/deps/libapprox-b261027d4fd7724c.rlib: /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/lib.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/abs_diff_eq.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/relative_eq.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/ulps_eq.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/macros.rs
+
+/home/todd/subconscious-ai/spacetime-module-rs/target/wasm32-unknown-unknown/release/deps/libapprox-b261027d4fd7724c.rmeta: /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/lib.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/abs_diff_eq.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/relative_eq.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/ulps_eq.rs /home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/macros.rs
+
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/lib.rs:
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/abs_diff_eq.rs:
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/relative_eq.rs:
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/ulps_eq.rs:
+/home/todd/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/approx-0.3.2/src/macros.rs:

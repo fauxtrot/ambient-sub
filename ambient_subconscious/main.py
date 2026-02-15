@@ -14,7 +14,10 @@ from typing import Optional
 
 from .agents.coordinator import AgentCoordinator
 from .config import Config, get_config, setup_logging
+from .conversation import ConversationEngine
 from .executive import ExecutiveAgent
+from .pipeline.audio_pipeline import AudioPipeline
+from .pipeline.video_pipeline import VideoPipeline
 from .spacetime.client import SpacetimeClient
 
 logger = logging.getLogger(__name__)
@@ -42,6 +45,9 @@ class AmbientSubconscious:
         self.spacetime_client: Optional[SpacetimeClient] = None
         self.coordinator: Optional[AgentCoordinator] = None
         self.executive_agent: Optional[ExecutiveAgent] = None
+        self.conversation_engine: Optional[ConversationEngine] = None
+        self.audio_pipeline: Optional[AudioPipeline] = None
+        self.video_pipeline: Optional[VideoPipeline] = None
         self._shutdown_event = asyncio.Event()
 
     async def start(self, agent_names: Optional[list] = None) -> None:
@@ -82,6 +88,34 @@ class AmbientSubconscious:
             await self.coordinator.start_all()
             logger.info("[OK] Agent coordinator started")
 
+            # Start ZMQ capture pipelines (audio + video from Godot client)
+            zmq_config = self.config.to_dict().get('zmq', {})
+            bind_ip = zmq_config.get('bind_address', '*')
+            audio_port = zmq_config.get('audio_port', 5555)
+            video_port = zmq_config.get('video_port', 5556)
+
+            audio_cfg = self.config.to_dict().get('agents', {}).get('audio', {}).get('config', {})
+
+            self.audio_pipeline = AudioPipeline(
+                spacetime_client=self.spacetime_client,
+                bind_address=f"tcp://{bind_ip}:{audio_port}",
+                whisper_model=audio_cfg.get('whisper_model', 'base'),
+                sample_rate=audio_cfg.get('sample_rate', 16000),
+                device=audio_cfg.get('diart_device', 'cuda'),
+            )
+            self.audio_pipeline.start()
+            logger.info(f"[OK] Audio pipeline started (ZMQ :{audio_port})")
+
+            self.video_pipeline = VideoPipeline(
+                spacetime_client=self.spacetime_client,
+                bind_address=f"tcp://{bind_ip}:{video_port}",
+                yolo_model=self.config.to_dict().get('agents', {}).get('webcam', {}).get('yolo_model', 'yolo11n'),
+                yolo_confidence=self.config.to_dict().get('agents', {}).get('webcam', {}).get('yolo_confidence', 0.5),
+                device='cuda',
+            )
+            self.video_pipeline.start()
+            logger.info(f"[OK] Video pipeline started (ZMQ :{video_port})")
+
             # Start executive agent if enabled
             if self.config.executive_enabled:
                 logger.info("Starting executive agent...")
@@ -93,12 +127,34 @@ class AmbientSubconscious:
                     reasoning_config=executive_config.get('reasoning', {}),
                     svelte_api_url=self.config.spacetimedb_svelte_api_url,
                     update_interval=executive_config.get('update_interval_seconds', 5),
-                    context_window_seconds=executive_config.get('context_window_seconds', 30)
+                    context_window_seconds=executive_config.get('context_window_seconds', 30),
+                    stage_config=executive_config.get('stage', {}),
+                    tts_config=executive_config.get('tts', {}),
                 )
 
                 # Start in background
                 asyncio.create_task(self.executive_agent.start())
                 logger.info("[OK] Executive agent started")
+
+            # Start conversation engine if enabled
+            conv_config = self.config.to_dict().get('conversation', {})
+            if conv_config.get('enabled', False):
+                logger.info("Starting conversation engine...")
+                executive_config = self.config.executive_config
+
+                florence2_config = self.config.to_dict().get('florence2', {})
+
+                self.conversation_engine = ConversationEngine(
+                    audio_receiver=self.audio_pipeline.receiver,
+                    config=conv_config,
+                    llm_config=executive_config.get('llm', {}),
+                    tts_config=executive_config.get('tts', {}),
+                    stage_config=executive_config.get('stage', {}),
+                    florence2_config=florence2_config,
+                )
+
+                asyncio.create_task(self.conversation_engine.start())
+                logger.info("[OK] Conversation engine started")
 
             # Setup signal handlers
             self._setup_signal_handlers()
@@ -132,6 +188,23 @@ class AmbientSubconscious:
         logger.info("=" * 60)
 
         try:
+            # Stop capture pipelines
+            if self.video_pipeline:
+                logger.info("Stopping video pipeline...")
+                self.video_pipeline.stop()
+                logger.info("[OK] Video pipeline stopped")
+
+            if self.audio_pipeline:
+                logger.info("Stopping audio pipeline...")
+                self.audio_pipeline.stop()
+                logger.info("[OK] Audio pipeline stopped")
+
+            # Stop conversation engine
+            if self.conversation_engine:
+                logger.info("Stopping conversation engine...")
+                await self.conversation_engine.stop()
+                logger.info("[OK] Conversation engine stopped")
+
             # Stop executive agent
             if self.executive_agent:
                 logger.info("Stopping executive agent...")
@@ -177,75 +250,10 @@ class AmbientSubconscious:
 
         logger.info(f"Registering {len(enabled_agents)} agents...")
 
-        # Register webcam agent
-        if 'webcam' in enabled_agents:
-            from .agents.vision.webcam_agent import WebcamAgent
-            webcam_config = enabled_agents['webcam']
-
-            webcam_agent = WebcamAgent(
-                agent_id='webcam-agent-1',
-                spacetime_client=self.spacetime_client,
-                camera_index=webcam_config.get('camera_index', 0),
-                fps=webcam_config.get('fps', 2.0),
-                resolution=tuple(webcam_config.get('resolution', [1280, 720])),
-                yolo_model=webcam_config.get('yolo_model', 'yolo26n'),
-                yolo_confidence=webcam_config.get('yolo_confidence', 0.5),
-                output_dir=self.config.data_dir / "frames",
-                warmup_frames=webcam_config.get('warmup_frames', 5)
-            )
-            self.coordinator.register_agent(webcam_agent)
-            logger.info("[OK] Registered webcam agent")
-
-        # Register screen capture agent
-        if 'screen_capture' in enabled_agents:
-            from .agents.vision.screen_capture_agent import ScreenCaptureAgent
-            screen_config = enabled_agents['screen_capture']
-
-            screen_agent = ScreenCaptureAgent(
-                agent_id='screen-capture-agent-1',
-                spacetime_client=self.spacetime_client,
-                fps=screen_config.get('fps', 1.0),
-                yolo_model=screen_config.get('yolo_model', 'yolo26n'),
-                yolo_confidence=screen_config.get('yolo_confidence', 0.5),
-                output_dir=self.config.data_dir / "frames",
-                capture_active_window_only=screen_config.get('capture_active_window_only', False),
-                privacy_mode_apps=screen_config.get('privacy_mode_apps', [])
-            )
-            self.coordinator.register_agent(screen_agent)
-            logger.info("[OK] Registered screen capture agent")
-
-        # Register audio agents
-        if 'audio' in enabled_agents:
-            from .agents.audio.audio_agent import AudioAgent
-            audio_config = enabled_agents['audio']
-
-            # Support multiple audio sources
-            audio_sources = audio_config.get('sources', [
-                {'device_id': None, 'label': 'default'}
-            ])
-
-            for idx, source in enumerate(audio_sources):
-                audio_agent = AudioAgent(
-                    agent_id=f"audio-agent-{source['label']}-{idx}",
-                    spacetime_client=self.spacetime_client,
-                    device_id=source.get('device_id'),
-                    device_label=source.get('label', f'mic{idx}'),
-                    sample_rate=audio_config.get('sample_rate', 16000),
-                    whisper_model=audio_config.get('whisper_model', 'base'),
-                    output_dir=self.config.data_dir / "audio",
-                    session_id=audio_config.get('session_id', 1),
-                    # VAD settings
-                    vad_energy_threshold=audio_config.get('vad_energy_threshold', 0.01),
-                    vad_ema_alpha=audio_config.get('vad_ema_alpha', 0.3),
-                    vad_min_utterance_duration=audio_config.get('vad_min_utterance_duration', 0.5),
-                    vad_max_utterance_duration=audio_config.get('vad_max_utterance_duration', 30.0),
-                    vad_silence_duration=audio_config.get('vad_silence_duration', 0.8),
-                    # Filter settings
-                    min_confidence=audio_config.get('min_confidence', -0.5),
-                    reject_fillers=audio_config.get('reject_fillers', True)
-                )
-                self.coordinator.register_agent(audio_agent)
-                logger.info(f"[OK] Registered audio agent: {source['label']} (device {source.get('device_id', 'default')})")
+        # NOTE: webcam, screen_capture, and audio agents are superseded by
+        # ZMQ-based AudioPipeline and VideoPipeline (started above in start()).
+        # The old agents used local device capture; the new pipelines receive
+        # frames/audio from the Godot client over ZMQ.
 
         if not enabled_agents:
             logger.info("Note: No agents enabled in configuration")

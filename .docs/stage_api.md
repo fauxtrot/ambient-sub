@@ -147,6 +147,18 @@ Force-stop audio playback and clear all buffers.
 
 ---
 
+### `GET /mirror`
+
+Capture a screenshot of the current viewport and return it as a JPEG image.
+
+**Response:** Binary JPEG image (`Content-Type: image/jpeg`), quality 85%.
+
+```bash
+curl http://127.0.0.1:7860/mirror --output screenshot.jpg
+```
+
+---
+
 ## Audio Pipeline
 
 The expected flow for the AI pipeline:
